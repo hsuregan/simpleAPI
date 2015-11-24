@@ -12,6 +12,7 @@ var jwt = require('jsonwebtoken');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var simple = require('./routes/simple');
 
 var app = express();
 mongoose.connect('mongodb://localhost/datingBase');
@@ -29,8 +30,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//This will check if the token is valid
+//only requests that start with /simple/* will be check for token
+app.all('/simple', [require('./validateRequest')]);
+
 app.use('/', routes);
 app.use('/users', users);
+app.use('/simple', simple);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
