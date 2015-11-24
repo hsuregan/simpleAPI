@@ -2,8 +2,11 @@ var express = require('express');
 var bcrypt = require('bcrypt');
 var User = require('../models/User');
 var mongoose = require('mongoose');
+var jwt = require('jsonwebtoken');
+var config = require('../config.js');
 
 var router = express.Router();
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -25,14 +28,6 @@ router.post('/register', function(req, res) {
 				hash: hash
 			});
 
-			console.log(hash);
-
-			bcrypt.compare(req.body.password, hash, function(err, res){
-				if(res) {
-					console.log("yay");
-				}
-			})
-
 			user.save(function(err) {
 				if(err) throw err;
 				console.log('User saved!');
@@ -43,5 +38,30 @@ router.post('/register', function(req, res) {
 	});
 
 });
+
+router.post('/authenticate', function(req, res){
+	User.findOne({
+		username: req.body.username
+	}, function(err, user) {
+		if(err) throw err;
+		if(!user) {
+			res.json({success: false, message: 'Authentication failed.  User not found.' });
+		} else if(user) {
+			var hash = user.hash;
+			bcrypt.compare(req.body.password, hash, function(err, result){
+				if(!result) {
+					res.json({success: false, message: 'Incorrect Username or Password.'});
+				} else {
+					var token = jwt.sign(user, config.secret);
+					res.json({
+						success: true,
+						message: 'TOKEN',
+						token: token
+					});
+				}
+			})
+		}
+	}
+)});
 
 module.exports = router;
