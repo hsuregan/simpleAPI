@@ -7,11 +7,11 @@ var userSchema = new Schema({
 	username: { type: String, required: true, unique: true},
 	hash: { type: String, required: true},
 	admin: Boolean,
-	location: String,
-	meta: {
-		age: Number,
-		city: String,
-	},
+	age: Number,
+	city: String,
+	longitude: Number,
+	latitude: Number,
+	
 	matches: [{type:Schema.ObjectId, ref:"User", childPath:"matches"}]
 });
 

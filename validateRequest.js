@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 var config = require('./config.js');
 
+//required to validate before request is made
 
 module.exports = function(req, res, next) {
 

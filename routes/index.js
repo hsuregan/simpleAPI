@@ -21,13 +21,20 @@ router.post('/register', function(req, res) {
 		bcrypt.hash(req.body.password, salt, function(err, hash){
 			var user = new User({
 				username: req.body.username,
-				hash: hash
+				hash: hash,
+				longitude: req.body.longitude,
+				latitude: req.body.latitude,
+				city: req.body.city
 			});
 
 			user.save(function(err) {
-				if(err) throw err;
-				console.log('User saved!');
-				res.json({ success:true});
+				if(err) {
+					res.json({success: false, message: 'Username already exists'});
+				} else {
+					console.log('User saved!');
+					res.json({ success:true});					
+				}
+
 			})
 
 		})
