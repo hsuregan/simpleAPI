@@ -13,6 +13,7 @@ module.exports = function(req, res, next) {
 			if(err) {
 				return res.json({success: false, message: "Failed to authenticate token."});
 			} else {
+				console.log("token approved");
 				req.decoded = decoded;
 				next();
 			}

@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt');
 
 var mongoose = require('mongoose');
+var relationship = require('mongoose-relationship');
 var jwt = require('jsonwebtoken');
 
 
@@ -32,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //This will check if the token is valid
 //only requests that start with /simple/* will be check for token
-app.all('/simple', [require('./validateRequest')]);
+app.all('/simple*', [require('./validateRequest')]);
 
 app.use('/', routes);
 app.use('/users', users);
