@@ -27,6 +27,7 @@ router.post('/register', function(req, res) {
 				city: req.body.city
 			});
 
+			console.log(user);
 			user.save(function(err) {
 				if(err) {
 					res.json({success: false, message: 'Username already exists'});

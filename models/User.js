@@ -5,13 +5,14 @@ var relationship = require('mongoose-relationship');
 
 var userSchema = new Schema({
 	username: { type: String, required: true, unique: true},
-	hash: { type: String, required: true},
+	hash: String,
 	admin: Boolean,
 	age: Number,
 	city: String,
 	longitude: Number,
 	latitude: Number,
-	
+
+
 	matches: [{type:Schema.ObjectId, ref:"User", childPath:"matches"}]
 });
 
