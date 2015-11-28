@@ -9,10 +9,18 @@ var userSchema = new Schema({
 	admin: Boolean,
 	age: Number,
 	city: String,
-	longitude: Number,
-	latitude: Number,
+	loc: {
+		type: [Number], //[long, lat] 
+		index: '2d',
+	},
+	
+	//when one person likes another
+	like: [userSchema],
 
+	//many-to-many relationship, when one person doesn't like the other
+	refuse: [{type:Schema.ObjectId, ref:"User", childPath:"refuse"}],
 
+	//many-to-many relationship, when both people like each other
 	matches: [{type:Schema.ObjectId, ref:"User", childPath:"matches"}]
 });
 

@@ -29,21 +29,35 @@ router.post('/delete', function(req, res){
 	})
 })
 
-//algorithm to update current coordinates and current city consistently
+//TODO:algorithm to update current coordinates and current city, should be called on viewDidLoad
 
 
 
-//pass in a longitude and a latitude, return the closest people
-//pass in your id
 
-
+//pass in matches, likes, refusals, a longitude and a latitude, return the closest people
 router.post('/closest', function(req, res){
-	//filter out matched ones
-				//TODO: if dislike, ignore
-			//TODO: if liked, ignore
-	User.find({city:req.body.city, matches:{$ne: req.body.id}}).limit(10).lean().exec(function(err, usersSameCity) {
-		//retrieve closest people
-		console.log(usersSameCity);
+
+	//get coordinates 
+	var coordinates = [];
+	coordinates.push(req.body.longitude),
+	coordinates.push(req.body.latitude),
+	
+	//get radius
+	var maxDist = req.body.maxDist || 20; //default to 20 km if not specified
+	maxDist /= 6371; //convert distance to radians
+ 
+
+	//retrieve people in your city, then that aren't already matched, refused, or liked
+	User.find({
+		loc:{
+			$near:coordinates,
+			$maxDist:maxDist
+		}, 
+		matches:{$ne: req.body.id}, 
+		refuse:{$ne: req.body.id}, 
+		like:{$ne:req.body.id}}).limit(10).lean().exec(function(err, usersSameCity) {
+
+		//order them:
 		var ordered = geolib.orderByDistance(req.body, usersSameCity);
 		var indexes = [];
 		for(var i = 0; i < ordered.length; i++) {
