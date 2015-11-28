@@ -13,9 +13,9 @@ var userSchema = new Schema({
 		type: [Number], //[long, lat] 
 		index: '2d',
 	},
-	
+
 	//when one person likes another
-	like: [userSchema],
+	like: [{type:Schema.ObjectId, ref: 'User'}],
 
 	//many-to-many relationship, when one person doesn't like the other
 	refuse: [{type:Schema.ObjectId, ref:"User", childPath:"refuse"}],
@@ -26,17 +26,7 @@ var userSchema = new Schema({
 
 userSchema.plugin(relationship, {relationshipPathName:'matches'});
 
-// userSchema.pre('remove', function(next){
-// 	console.log("remove associated matches entered");
-// 	this.model('User').update(
-// 		{_id: {$in: this.matches}},
-// 		{$pull: {groups: this._id}},
-// 		{multi: true},
-// 	)
-// })
-
 var User = mongoose.model('User', userSchema);
-
 
 module.exports = User;
 

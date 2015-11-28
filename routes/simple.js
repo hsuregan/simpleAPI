@@ -39,8 +39,8 @@ router.post('/closest', function(req, res){
 
 	//get coordinates 
 	var coordinates = [];
-	coordinates.push(req.body.longitude),
-	coordinates.push(req.body.latitude),
+	coordinates.push(req.body.longitude);
+	coordinates.push(req.body.latitude);
 	
 	//get radius
 	var maxDist = req.body.maxDist || 20; //default to 20 km if not specified
