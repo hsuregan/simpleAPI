@@ -32,8 +32,6 @@ router.post('/delete', function(req, res){
 //TODO:algorithm to update current coordinates and current city, should be called on viewDidLoad
 
 
-
-
 //pass in matches, likes, refusals, a longitude and a latitude, return the closest people
 router.post('/closest', function(req, res){
 
@@ -46,18 +44,23 @@ router.post('/closest', function(req, res){
 	var maxDist = req.body.maxDist || 20; //default to 20 km if not specified
 	maxDist /= 6371; //convert distance to radians
  
-
-	//retrieve people in your city, then that aren't already matched, refused, or liked
+	//retrieve people within that radius, then that 
+	//aren't already matched, refused, or those you HAVE requested to get in touch with
 	User.find({
-		loc:{
-			$near:coordinates,
-			$maxDist:maxDist
-		}, 
+		location: {
+			$near : {
+				$geometry : {
+					type: "Point",
+					coordinates: coordinates
+				},
+				$maxDistance: maxDist
+			}
+		},
 		matches:{$ne: req.body.id}, 
 		refuse:{$ne: req.body.id}, 
-		like:{$ne:req.body.id}}).limit(10).lean().exec(function(err, usersSameCity) {
+		requests:{$ne:req.body.id}}).limit(10).lean().exec(function(err, usersSameCity) {
 
-		//order them:
+		//order them, ordered is an array of indexes mapping to usersSameCity:
 		var ordered = geolib.orderByDistance(req.body, usersSameCity);
 		var indexes = [];
 		for(var i = 0; i < ordered.length; i++) {

@@ -10,12 +10,15 @@ var userSchema = new Schema({
 	age: Number,
 	city: String,
 	loc: {
-		type: [Number], //[long, lat] 
-		index: '2d',
+		coordinates: [Number], //[long, lat] 
+		type: {
+			type: String,
+			default: 'Point'
+		},
 	},
 
-	//when one person likes another
-	like: [{type:Schema.ObjectId, ref: 'User'}],
+	//these users want to get in touch with you 
+	requests: [{type:Schema.ObjectId, ref: 'User'}],
 
 	//many-to-many relationship, when one person doesn't like the other
 	refuse: [{type:Schema.ObjectId, ref:"User", childPath:"refuse"}],
@@ -25,6 +28,7 @@ var userSchema = new Schema({
 });
 
 userSchema.plugin(relationship, {relationshipPathName:'matches'});
+userSchema.index({location:'2dsphere'});
 
 var User = mongoose.model('User', userSchema);
 
