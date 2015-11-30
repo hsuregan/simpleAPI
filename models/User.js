@@ -27,6 +27,7 @@ var userSchema = new Schema({
 	matches: [{type:Schema.ObjectId, ref:"User", childPath:"matches"}]
 });
 
+userSchema.plugin(relationship, {relationshipPathName:'refuse'});
 userSchema.plugin(relationship, {relationshipPathName:'matches'});
 userSchema.index({location:'2dsphere'});
 
